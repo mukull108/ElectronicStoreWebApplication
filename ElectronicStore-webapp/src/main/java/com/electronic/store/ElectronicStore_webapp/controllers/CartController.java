@@ -8,6 +8,7 @@ import com.electronic.store.ElectronicStore_webapp.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -17,6 +18,7 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
+    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
     @PostMapping("/addItem/{userId}")
     public ResponseEntity<CartDto> addItemToCart(@PathVariable String userId,
                                                      @RequestBody AddItemToCartRequest request){
@@ -25,6 +27,7 @@ public class CartController {
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
     @DeleteMapping("/{userId}/items/{itemId}")
     public ResponseEntity<ApiResponseMessages> removeItemFromCart(
             @PathVariable String userId,
@@ -40,6 +43,7 @@ public class CartController {
         return new ResponseEntity<>(responseMessages,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponseMessages> clearCart(
             @PathVariable String userId
@@ -53,6 +57,7 @@ public class CartController {
         return new ResponseEntity<>(responseMessages,HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
     @GetMapping("/{userId}")
     public  ResponseEntity<CartDto> getCart(
             @PathVariable String userId

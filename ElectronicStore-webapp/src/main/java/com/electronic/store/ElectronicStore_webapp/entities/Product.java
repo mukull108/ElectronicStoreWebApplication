@@ -26,6 +26,6 @@ public class Product {
     private boolean live;
 
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 }
