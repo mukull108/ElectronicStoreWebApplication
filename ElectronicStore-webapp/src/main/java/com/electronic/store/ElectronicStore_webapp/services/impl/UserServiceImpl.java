@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
         user.setAbout(userDto.getAbout());
         user.setGender(userDto.getGender());
         user.setImageName(userDto.getImageName());
-        user.setPassword(userDto.getPassword());
+        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
         User updatedUser = userRepository.save(user); //saving updated data
 

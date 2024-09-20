@@ -16,6 +16,6 @@ public class CartDto {
     private String cartId;
     private Date addedDate;
     private UserDto user;
-    private List<CartItem> itemList = new ArrayList<>();
+    private List<CartItemDto> itemList = new ArrayList<>();
 
 }

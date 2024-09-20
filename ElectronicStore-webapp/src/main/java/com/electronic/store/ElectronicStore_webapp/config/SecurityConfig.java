@@ -32,8 +32,11 @@ public class SecurityConfig {
                     .requestMatchers(HttpMethod.GET,"/product/**").permitAll()
                     .requestMatchers("/product/**").hasRole("ADMIN")
                     .requestMatchers(HttpMethod.GET,"/users/**").permitAll()
+                    .requestMatchers(HttpMethod.POST,"/users/create").permitAll()
                     .requestMatchers(HttpMethod.GET,"/category/**").permitAll()
-                    .requestMatchers("/category").hasRole("ADMIN")
+                    .requestMatchers("/category/**").hasRole("ADMIN")
+
+                        .anyRequest().permitAll()
 
 //                    //secure order
 //                        method level security

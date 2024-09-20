@@ -7,6 +7,8 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -34,4 +36,6 @@ public class UserDto {
 
     @ImgNameValid
     private String imageName;
+
+    private Set<RoleDto> roles;
 }
