@@ -1,5 +1,6 @@
 package com.electronic.store.ElectronicStore_webapp.controllers;
 
+import com.electronic.store.ElectronicStore_webapp.config.AppConstants;
 import com.electronic.store.ElectronicStore_webapp.dtos.AddItemToCartRequest;
 import com.electronic.store.ElectronicStore_webapp.dtos.ApiResponseMessages;
 import com.electronic.store.ElectronicStore_webapp.dtos.CartDto;
@@ -18,52 +19,52 @@ public class CartController {
     @Autowired
     private CartService cartService;
 
-    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
+    @PreAuthorize("hasAnyRole('" + AppConstants.ROLE_ADMIN + "','" + AppConstants.ROLE_NORMAL + "')'")
     @PostMapping("/addItem/{userId}")
     public ResponseEntity<CartDto> addItemToCart(@PathVariable String userId,
-                                                     @RequestBody AddItemToCartRequest request){
+                                                 @RequestBody AddItemToCartRequest request) {
 
         CartDto cartDto = cartService.addItemToCart(userId, request);
         return new ResponseEntity<>(cartDto, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
+    @PreAuthorize("hasAnyRole('" + AppConstants.ROLE_ADMIN + "','" + AppConstants.ROLE_NORMAL + "')")
     @DeleteMapping("/{userId}/items/{itemId}")
     public ResponseEntity<ApiResponseMessages> removeItemFromCart(
             @PathVariable String userId,
             @PathVariable int itemId
-    ){
-        cartService.removeItemFromCart(userId,itemId);
+    ) {
+        cartService.removeItemFromCart(userId, itemId);
         ApiResponseMessages responseMessages = ApiResponseMessages.builder()
                 .message("Item has removed!!")
                 .success(true)
                 .status(HttpStatus.OK)
                 .build();
 
-        return new ResponseEntity<>(responseMessages,HttpStatus.OK);
+        return new ResponseEntity<>(responseMessages, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
+    @PreAuthorize("hasAnyRole('" + AppConstants.ROLE_ADMIN + "','" + AppConstants.ROLE_NORMAL + "')")
     @DeleteMapping("/{userId}")
     public ResponseEntity<ApiResponseMessages> clearCart(
             @PathVariable String userId
-    ){
+    ) {
         cartService.clearCart(userId);
         ApiResponseMessages responseMessages = ApiResponseMessages.builder()
                 .status(HttpStatus.OK)
                 .success(true)
                 .message("Cart is clear now!!")
                 .build();
-        return new ResponseEntity<>(responseMessages,HttpStatus.OK);
+        return new ResponseEntity<>(responseMessages, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN','NORMAL')")
+    @PreAuthorize("hasAnyRole('" + AppConstants.ROLE_ADMIN + "','" + AppConstants.ROLE_NORMAL + "')")
     @GetMapping("/{userId}")
-    public  ResponseEntity<CartDto> getCart(
+    public ResponseEntity<CartDto> getCart(
             @PathVariable String userId
-    ){
+    ) {
         CartDto cartByUser = cartService.getCartByUser(userId);
-        return new ResponseEntity<>(cartByUser,HttpStatus.OK);
+        return new ResponseEntity<>(cartByUser, HttpStatus.OK);
     }
 
 }

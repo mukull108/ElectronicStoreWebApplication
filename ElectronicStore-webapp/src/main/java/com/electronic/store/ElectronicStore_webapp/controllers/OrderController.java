@@ -1,5 +1,6 @@
 package com.electronic.store.ElectronicStore_webapp.controllers;
 
+import com.electronic.store.ElectronicStore_webapp.config.AppConstants;
 import com.electronic.store.ElectronicStore_webapp.dtos.ApiResponseMessages;
 import com.electronic.store.ElectronicStore_webapp.dtos.CreateOrderRequest;
 import com.electronic.store.ElectronicStore_webapp.dtos.OrderDto;
@@ -21,14 +22,14 @@ public class OrderController {
     private OrderService orderService;
 
     //create orders
-    @PreAuthorize("hasAnyRole('NORMAL','ADMIN')")
+    @PreAuthorize("hasAnyRole('"+ AppConstants.ROLE_NORMAL +"','"+AppConstants.ROLE_ADMIN+"')")
     @PostMapping
     public ResponseEntity<OrderDto> createOrderHandler(@Valid @RequestBody CreateOrderRequest request){
         OrderDto order = orderService.createOrder(request);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('"+AppConstants.ROLE_ADMIN+"')")
     @DeleteMapping("/{orderId}")
     public ResponseEntity<ApiResponseMessages> removeOrderHandler(
             @PathVariable String orderId
@@ -42,14 +43,14 @@ public class OrderController {
         return new ResponseEntity<>(messages,HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('NORMAL','ADMIN')")
+    @PreAuthorize("hasAnyRole('"+AppConstants.ROLE_NORMAL+"','"+AppConstants.ROLE_ADMIN+"')")
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<OrderDto>> getOrderOfUser(@PathVariable String userId){
         List<OrderDto> ordersOfUser = orderService.getOrdersOfUser(userId);
         return new ResponseEntity<>(ordersOfUser,HttpStatus.OK);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('"+AppConstants.ROLE_ADMIN+"')")
     @GetMapping
     public ResponseEntity<PageableResponse<OrderDto>> getAllOrders(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) int pageNumber,

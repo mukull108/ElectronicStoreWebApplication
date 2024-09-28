@@ -1,5 +1,6 @@
 package com.electronic.store.ElectronicStore_webapp.services.impl;
 
+import com.electronic.store.ElectronicStore_webapp.config.AppConstants;
 import com.electronic.store.ElectronicStore_webapp.dtos.PageableResponse;
 import com.electronic.store.ElectronicStore_webapp.dtos.UserDto;
 import com.electronic.store.ElectronicStore_webapp.entities.Role;
@@ -63,9 +64,9 @@ public class UserServiceImpl implements UserService {
         //assign role to user default-> NORMAL
         Role role = new Role();
         role.setRoleId(UUID.randomUUID().toString());
-        role.setName("ROLE_NORMAL");
+        role.setName("ROLE_" + AppConstants.ROLE_NORMAL);
 
-        Role roleNormal = roleRepository.findByName("ROLE_NORMAL").orElse(role);
+        Role roleNormal = roleRepository.findByName("ROLE_" + AppConstants.ROLE_NORMAL).orElse(role);
         user.setRoles(Set.of(roleNormal));
         // saving to database
         User savedUser = userRepository.save(user);
