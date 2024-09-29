@@ -1,13 +1,11 @@
 package com.electronic.store.ElectronicStore_webapp.controllers;
 
-import com.electronic.store.ElectronicStore_webapp.dtos.JwtRequest;
-import com.electronic.store.ElectronicStore_webapp.dtos.JwtResponse;
-import com.electronic.store.ElectronicStore_webapp.dtos.TokenRequestGoogle;
-import com.electronic.store.ElectronicStore_webapp.dtos.UserDto;
+import com.electronic.store.ElectronicStore_webapp.dtos.*;
 import com.electronic.store.ElectronicStore_webapp.entities.User;
 import com.electronic.store.ElectronicStore_webapp.exceptions.BadApiRequestException;
 import com.electronic.store.ElectronicStore_webapp.exceptions.ResourceNotFoundException;
 import com.electronic.store.ElectronicStore_webapp.security.JwtHelper;
+import com.electronic.store.ElectronicStore_webapp.services.RefreshTokenService;
 import com.electronic.store.ElectronicStore_webapp.services.UserService;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
@@ -55,10 +53,31 @@ public class AuthenticationController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private RefreshTokenService refreshTokenService;
+
 
     @Autowired
     private JwtHelper jwtHelper;
     private Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+
+    @PostMapping("/regenerate-token")
+    public ResponseEntity<JwtResponse> regenerateToken(@RequestBody RefreshTokenRequest request){
+        RefreshTokenDto refreshTokenDto = refreshTokenService.findByToken(request.getRefreshToken());
+        RefreshTokenDto refreshTokenDto1 = refreshTokenService.verifyRefreshToken(refreshTokenDto);
+        UserDto user = refreshTokenService.getUser(refreshTokenDto1);
+
+        String jwtToken = jwtHelper.generateToken(mapper.map(user, User.class));
+
+        JwtResponse response = JwtResponse.builder()
+                .userDto(user)
+                .token(jwtToken)
+                .refreshToken(refreshTokenDto1)
+                .build();
+
+        return ResponseEntity.ok(response);
+
+    }
 
     @PostMapping("/generate-token")
     public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest request) {
@@ -69,8 +88,16 @@ public class AuthenticationController {
         //generate token after authenticating
         UserDetails user = userDetailsService.loadUserByUsername(request.getUsername());
         String token = jwtHelper.generateToken(user);
+
+        //refresh token
+        RefreshTokenDto refreshToken = refreshTokenService.createRefreshToken(request.getUsername());
+
         //send response
-        JwtResponse response = JwtResponse.builder().token(token).userDto(mapper.map(user, UserDto.class)).build();
+        JwtResponse response = JwtResponse.builder()
+                .token(token)
+                .userDto(mapper.map(user, UserDto.class))
+                .refreshToken(refreshToken)
+                .build();
 
         return ResponseEntity.ok(response);
     }

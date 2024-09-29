@@ -75,7 +75,7 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.POST, "/users/create").permitAll()
                                 .requestMatchers(HttpMethod.GET, "/category/**").permitAll()
                                 .requestMatchers("/category/**").hasRole(AppConstants.ROLE_ADMIN)
-                                .requestMatchers(HttpMethod.POST, "/auth/generate-token", "/auth/login-with-google").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/auth/generate-token", "/auth/login-with-google", "/auth/regenerate-token").permitAll()
                                 .requestMatchers("/auth/**").authenticated()
                                 .anyRequest().permitAll()
 
